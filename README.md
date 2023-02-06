@@ -61,7 +61,7 @@ URI = scheme "://" authority "/" path [ "?" query ] [ "#" fragment ]
 ```
 #### Rules
 
-***Rule:*** Forward slash separator (/) must be used to indicate a hierarchical relationship.
+##### **Rule:** Forward slash separator (/) must be used to indicate a hierarchical relationship.
 
 Example: 
 
@@ -69,7 +69,7 @@ Example:
 http://api.canvas.restapi.org/shapes/polygons/quadrilaterals/squares
 ```
 
-**Rule:*** A trailing forward slash (/) should not be included in URIs
+##### **Rule:** A trailing forward slash (/) should not be included in URIs
 
 As the last character within a URI’s path, a forward slash (/) adds no semantic value and may cause confusion. REST APIs should not expect a trailing slash and should not include them in the links that they provide to clients.
 
@@ -81,18 +81,18 @@ http://api.canvas.restapi.org/shapes
 ```
 However, every character within a URI counts toward a resource’s unique identity. Two different URIs map to two different resources.
 
-**Rule:** Hyphens (-) should be used to improve the readability of URIs.
+##### **Rule:** Hyphens (-) should be used to improve the readability of URIs.
 
 Example:
 ```
 http://api.example.restapi.org/blogs/mark-masse/entries/this-is-my-first-post
 ```
 
-**Rule:** Underscores (_) should not be used in URIs.
+##### **Rule:** Underscores (_) should not be used in URIs.
 
 Sometimes Underlining URIs, depending on the application’s font, the underscore (_) character can either get partially obscured or completely hidden. To avoid this confusion, use hyphens (-) instead of underscores as described above.
 
-**Rule:** Lowercase letters should be preferred in URI paths.
+##### **Rule:** Lowercase letters should be preferred in URI paths.
 
 RFC 3986 defines URIs as case-sensitive except for the scheme and host components. For example:
 
@@ -104,7 +104,7 @@ http://api.example.restapi.org/My-Folder/my-doc
 
 The First and the second URI are the same. The third URI is not the same as URIs 1 and 2, which may cause unnecessary confusion.
 
-**Rule:** File extensions should not be included in URIs
+##### **Rule:** File extensions should not be included in URIs
 
 URIs should rely on the media type, as communicated through the Content-Type header, to determine how to process the body’s content. For more about media types
 
