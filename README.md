@@ -3,26 +3,47 @@
 
 ## Table of content
 
-- [Objectives](#objectives)
+- [Objectives
+](#objectives)
 
-- [Introduction](#introduction)
+- [Introduction
+](#introduction)
 
-- [Designing URIs](#designing-uris)
-    - [URI format design](#uri-format-design)
-    - [URI authority desing](#uri-authority-desing)
-    - [Resources modeling](#resources-modeling)
-    - [URI path design](#uri-path-design)
-    - [URI query desing](#uri-query-desing)
+- [Designing URIs
+](#designing-uris)
+    - [URI format design
+](#uri-format-design)
+    - [URI authority desing
+](#uri-authority-desing)
+    - [Resources modeling
+](#resources-modeling)
+    - [URI path design
+](#uri-path-design)
+    - [URI query desing
+](#uri-query-desing)
 
-- [Interaction designs with HTTP](#interaction-designs-with-http)
+- [Interaction designs with HTTP
+](#interaction-designs-with-http)
 
-- [Metadata design](#metadata-design)
+- [Metadata design
+](#metadata-design)
 
-- [Representation design](#representation-design)
+- [Representation design
+](#representation-design)
+    - [Message body format desing
+](#message-body-format-desing)
 
-- [Client concerns](#client-concerns)
+    - [Media type representation
+](#media-type-representation)
 
-- [Design principles](#design-principles)
+    - [Error representation design
+](#error-representation-design)
+
+- [Client concerns
+](#client-concerns)
+
+- [Design principles
+](#design-principles)
 
 ## Introduction
 
@@ -62,7 +83,11 @@ REST APIs use Uniform Resource Identifiers (URIs) to address resources.
 The rules presented in this section pertain to the format of a URI. RFC 3986 defines the generic URI syntax as shown below:
 
 ```
-URI = scheme "://" authority "/" path [ "?" query ] [ "#" fragment ]
+URI = scheme "://" authority "/" path [
+    "?" query
+] [
+    "#" fragment
+]
 ```
 
 #### **Rule:** Forward slash separator (/) must be used to indicate a hierarchical relationship.
@@ -70,7 +95,7 @@ URI = scheme "://" authority "/" path [ "?" query ] [ "#" fragment ]
 Example: 
 
 ```
-http://api.canvas.restapi.org/shapes/polygons/quadrilaterals/squares
+http: //api.canvas.restapi.org/shapes/polygons/quadrilaterals/squares
 ```
 
 #### **Rule:** A trailing forward slash (/) should not be included in URIs
@@ -80,8 +105,8 @@ As the last character within a URI’s path, a forward slash (/) adds no semanti
 Many web components and frameworks will treat the following two URIs equally:
 
 ```
-http://api.canvas.restapi.org/shapes/
-http://api.canvas.restapi.org/shapes
+http: //api.canvas.restapi.org/shapes/
+http: //api.canvas.restapi.org/shapes
 ```
 However, every character within a URI counts toward a resource’s unique identity. Two different URIs map to two different resources.
 
@@ -89,7 +114,7 @@ However, every character within a URI counts toward a resource’s unique identi
 
 Example:
 ```
-http://api.example.restapi.org/blogs/mark-masse/entries/this-is-my-first-post
+http: //api.example.restapi.org/blogs/mark-masse/entries/this-is-my-first-post
 ```
 
 #### **Rule:** Underscores (_) should not be used in URIs.
@@ -101,9 +126,9 @@ Sometimes Underlining URIs, depending on the application’s font, the underscor
 RFC 3986 defines URIs as case-sensitive except for the scheme and host components. For example:
 
 ```
-http://api.example.restapi.org/my-folder/my-doc  
-HTTP://API.EXAMPLE.RESTAPI.ORG/my-folder/my-doc  
-http://api.example.restapi.org/My-Folder/my-doc
+http: //api.example.restapi.org/my-folder/my-doc  
+HTTP: //API.EXAMPLE.RESTAPI.ORG/my-folder/my-doc  
+http: //api.example.restapi.org/My-Folder/my-doc
 ```
 
 The First and the second URI are the same. The third URI is not the same as URIs 1 and 2, which may cause unnecessary confusion.
@@ -113,12 +138,12 @@ The First and the second URI are the same. The third URI is not the same as URIs
 URIs should rely on the media type, as communicated through the Content-Type header, to determine how to process the body’s content. For more about media types
 
 ```
-http://api.college.restapi.org/students/3248234/transcripts/2005/fall.json
+http: //api.college.restapi.org/students/3248234/transcripts/2005/fall.json
 ```
 File extensions should not be used to indicate format preference.
 
 ```
-http://api.college.restapi.org/students/3248234/transcripts/2005/fall 
+http: //api.college.restapi.org/students/3248234/transcripts/2005/fall 
 ```
 
 REST API clients should be encouraged to utilize HTTP’s provided format selection mechanism, the Accept request header.
@@ -135,7 +160,7 @@ Using media type negotiation clients can select a format.
  The full domain name of an API should add a subdomain named api. For example:
 
 ```
-http://api.soccer.restapi.org
+http: //api.soccer.restapi.org
 ```
 
 #### Rule: Consistent subdomain names should be used for your client developer portal
@@ -143,7 +168,7 @@ http://api.soccer.restapi.org
 If an API provides a developer portal, by convention it should have a subdomain labeled developer. For example:
 
 ```
-http://developer.soccer.restapi.org
+http: //developer.soccer.restapi.org
 ```
 
 ### Resources modeling
@@ -153,16 +178,16 @@ http://developer.soccer.restapi.org
 The URI path conveys a REST API’s resource model, with each forward slash separated path segment corresponding to a unique resource within the model’s hierarchy. For example, this URI design:
 
 ```
-http://api.soccer.restapi.org/leagues/seattle/teams/trebuchet
+http: //api.soccer.restapi.org/leagues/seattle/teams/trebuchet
 ```
 
 Indicates that each of these URIs should also identify an addressable resource:
 
 ```
-http://api.soccer.restapi.org/leagues/seattle/teams
-http://api.soccer.restapi.org/leagues/seattle
-http://api.soccer.restapi.org/leagues
-http://api.soccer.restapi.org
+http: //api.soccer.restapi.org/leagues/seattle/teams
+http: //api.soccer.restapi.org/leagues/seattle
+http: //api.soccer.restapi.org/leagues
+http: //api.soccer.restapi.org
 ```
 
 We call each one of this resources as a **collection**
@@ -190,7 +215,7 @@ Assigning meaningful values to each path segment helps to clearly communicate th
 Example:
 
 ```
-http://api.soccer.restapi.org/leagues
+http: //api.soccer.restapi.org/leagues
 ```
 
 #### Rule: A verb or verb phrase should be used for controller names
@@ -198,9 +223,9 @@ http://api.soccer.restapi.org/leagues
 Like a computer program’s function, a URI identifying a controller resource should be named to indicate its action. For example:
 
 ```
-http://api.college.restapi.org/students/morgan/register
-http://api.example.restapi.org/lists/4324/dedupe
-http://api.ognom.restapi.org/dbs/reindex
+http: //api.college.restapi.org/students/morgan/register
+http: //api.example.restapi.org/lists/4324/dedupe
+http: //api.ognom.restapi.org/dbs/reindex
 ```
 
 #### Rule: Variable path segments may be substituted with identity-based values
@@ -208,7 +233,7 @@ http://api.ognom.restapi.org/dbs/reindex
 The URI Template syntax allows designers to clearly name both the static and variable segments. A URI template includes variables that must be substituted before resolution.  The URI template example below has three variables (leagueId, teamId, and playerId):
 
 ```
-http://api.soccer.restapi.org/leagues/{leagueId}/teams/{teamId}/players/{playerId}
+http: //api.soccer.restapi.org/leagues/{leagueId}/teams/{teamId}/players/{playerId}
 ```
 
 
@@ -236,7 +261,11 @@ POST /users/1234/delete
 Optional **query** comes after the path and before the optional fragment:
 
 ```
-URI = scheme "://" authority "/" path [ "?" query ] [ "#" fragment ]
+URI = scheme "://" authority "/" path [
+    "?" query
+] [
+    "#" fragment
+]
 ```
 
 #### Rule: The query component of a URI may be used to filter collections or stores
@@ -276,6 +305,180 @@ EN DESARROLLO
 ## Metadata design
 
 ## Representation design
+
+### Message body format desing
+
+A REST API commonly uses a response message’s entity body to help convey the state of a request message’s identified resource. The most commonly used text formats are XML and JSON.
+
+In this section we will focus on json format.
+
+#### Rule: JSON should be supported for resource representation
+
+JSON is a popular format that is commonly used in REST API design. A rest API should use the JSON format to structure its information.
+
+#### Rule: JSON must be well-formed
+
+JSON names should use **camelCase** format and should avoid special characters whenever possible.
+
+we must not use (-) hyphen in our keys, because it complicates parsers. We can use underscore (_) instead, but using lowecase or camelCase is the best.
+
+The JSON object syntax defines names as strings which are always surrounded **by double quotes**.
+
+Another best practice is to create always a **root** element. Create a root element is optional, but it helps when we are working with complicated JSON.
+
+The example below show a well-formed json:
+
+```
+{
+    "firstName" : "Osvaldo",
+    "lastName" : "Alonso",    
+    "number" : 6,  
+    "birthDate" : "2005-11-15"  
+}
+```
+
+Json supports number values directly.
+Json does not support dates directly, so they are tipically formated as string.
+
+#### Rule: XML and other formats may optionally be used for resource representation
+
+We have been stablished that Json format should be a supported representation format for REST API. REST APIs may optionally support XML, HTML, and other languages as alternative formats for resource representation. Clients should express their desired representation using media type negotiation.
+
+### Media type representation
+
+#### Field representation
+
+A field is named slot with some associated information that is stored in its value.
+
+We can specify the field representation using the following format:
+
+```
+{
+    "type" : <Text, that defines the content of its value>,
+    "defaultValue" : <a type-specific value>,
+    "readOnly" : <Boolean>,
+    "required" : <Boolean>,
+    "hidden"   : <Boolean,  indicates whether a REST API should include the field within forms carried by its response messages>,
+    "constraints" : <Array of constraints that define the field domain, for example: regex,choices, etc.>,
+    "description" : <Text>
+}
+```
+
+#### JSON Field types
+
+The json fields may be one of the following types:
+
+**String**: Strings in JSON must be written in double quotes.
+
+Example:
+
+```
+{
+    "firstName": "John"
+}
+```
+
+**Number**: Numbers in JSON must be an integer or a floating point.
+
+exaples:
+
+```
+{
+    "age": 15,
+    "weight": 15.55
+}
+```
+
+**Object**: Values in JSON can be objects.
+
+Example:
+
+```
+{
+    "employee": {
+        "firstName": "John",
+        "age": 25,
+        "salary": 3200
+    }
+}
+```
+
+**Array**: Values in JSON can be arrays.
+
+Example: 
+
+```
+{
+    "employees": ["Anna", "John"]
+}
+```
+
+**Boolean**: Values in JSON can be boolean {true | false}
+
+Example:
+
+```
+{
+    "onSale": true
+}
+```
+
+**null**: Values in JSON can be null.
+
+Example:
+
+```
+{
+    "midleName": null
+}
+```
+
+
+
+### Error representation design
+
+Http's 400 and 500 error status codes should be used with clien readable information in the response message’s entity body.
+
+#### Rule: A consistent form should be used to represent errors
+
+This rule describes the reprsentation design for a single error.
+
+The example below show the representation error desing using the Content-type: application/json:
+
+```
+{
+    "code": "123",
+    "description": "an error has  occurred"
+}
+```
+
+**code**: Represents the unique error identifier.
+**description**: Represents an optional error description.
+
+#### Rule: A consistent form should be used to represent error responses
+
+If a request result in one or more errors we should use an ErrorContainer to represent a list of errors.
+
+In the example below there is a ErrorContainer using the Media-Type: application/json.
+
+```
+{
+    "elements": [
+        {
+            "code": "123",
+            "description": "this field is required"
+        },
+        {
+            "code": "124",
+            "description": "Failed to update /users/1234"
+        }
+    ]
+}
+```
+
+#### Rule: Consistent error types should be used for common error conditions
+
+Generic error types may be leveraged by many APIs. These error types should be defined once and then shared across all APIs.
 
 ## Client concerns
 
