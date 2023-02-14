@@ -1,18 +1,21 @@
 # REST API design best practices
 
+## Content
+
 - [Objectives](#objectives)
 - [Introduction](#introduction)
 - [Designing URIs](#designing-uris)
-    - [URI format design](#uri-format-design)
-    - [URI authority desing](#uri-authority-desing)
-    - [Resources modeling](#resources-modeling)
-    - [URI query desing](#uri-query-desing)
+  - [URI format design](#uri-format-design)
+  - [URI authority desing](#uri-authority-desing)
+  - [Resources modeling](#resources-modeling)
+  - [URI path design](#uri-path-design)
+  - [URI query desing](#uri-query-desing)
 - [Interaction designs with HTTP](#interaction-designs-with-http)
 - [Metadata design](#metadata-design)
 - [Representation design](#representation-design)
-    - [Message body format design](#message-body-format-desing)
-    - [Media type representation](#media-type-representation)
-    - [Error representation design](#error-representation-design)
+  - [Message body format design](#message-body-format-desing)
+  - [Media type representation](#media-type-representation)
+  - [Error representation design](#error-representation-design)
 - [Client concerns](#client-concerns)
 - [Design principles](#design-principles)
 
@@ -53,18 +56,14 @@ REST APIs use Uniform Resource Identifiers (URIs) to address resources.
 
 The rules presented in this section pertain to the format of a URI. RFC 3986 defines the generic URI syntax as shown below:
 
-```http
-URI = scheme "://" authority "/" path [
-    "?" query
-] [
-    "#" fragment
-]
+```text
+URI = scheme "://" authority "/" path ["?" query] ["#" fragment]
 ```
 
 Example:
 
-```
-http: //api.canvas.restapi.org/shapes/polygons/quadrilaterals/squares
+```text
+http://api.canvas.restapi.org/shapes/polygons/quadrilaterals/squares
 ```
 
 #### **Rule:** A trailing forward slash (/) should not be included in URIs
@@ -73,54 +72,55 @@ As the last character within a URI’s path, a forward slash (/) adds no semanti
 
 Many web components and frameworks will treat the following two URIs equally:
 
-```
-http: //api.canvas.restapi.org/shapes/
-http: //api.canvas.restapi.org/shapes
+```text
+http://api.canvas.restapi.org/shapes/
+http://api.canvas.restapi.org/shapes
 ```
 
 However, every character within a URI counts toward a resource’s unique identity. Two different URIs map to two different resources.
 
-#### **Rule:** Hyphens (-) should be used to improve the readability of URIs.
+#### Rule: Hyphens (-) should be used to improve the readability of URIs
 
 Example:
 
-```
-http: //api.example.restapi.org/blogs/mark-masse/entries/this-is-my-first-post
+```text
+http://api.example.restapi.org/blogs/mark-masse/entries/this-is-my-first-post
 ```
 
-#### **Rule:** Underscores (_) should not be used in URIs.
+#### Rule: Underscores (_) should not be used in URIs
 
 Sometimes Underlining URIs, depending on the application’s font, the underscore (_) character can either get partially obscured or completely hidden. To avoid this confusion, use hyphens (-) instead of underscores as described above.
 
-#### **Rule:** Lowercase letters should be preferred in URI paths.
+#### Rule: Lowercase letters should be preferred in URI paths
 
 RFC 3986 defines URIs as case-sensitive except for the scheme and host components. For example:
 
-```
-http: //api.example.restapi.org/my-folder/my-doc  
-HTTP: //API.EXAMPLE.RESTAPI.ORG/my-folder/my-doc  
-http: //api.example.restapi.org/My-Folder/my-doc
+```text
+http://api.example.restapi.org/my-folder/my-doc  
+HTTP://API.EXAMPLE.RESTAPI.ORG/my-folder/my-doc  
+http://api.example.restapi.org/My-Folder/my-doc
 ```
 
 The First and the second URI are the same. The third URI is not the same as URIs 1 and 2, which may cause unnecessary confusion.
 
-#### **Rule:** File extensions should not be included in URIs
+#### Rule: File extensions should not be included in URIs
 
 URIs should rely on the media type, as communicated through the Content-Type header, to determine how to process the body’s content. For more about media types
 
+```text
+http://api.college.restapi.org/students/3248234/transcripts/2005/fall.json
 ```
-http: //api.college.restapi.org/students/3248234/transcripts/2005/fall.json
-```
+
 File extensions should not be used to indicate format preference.
 
-```
-http: //api.college.restapi.org/students/3248234/transcripts/2005/fall 
+```text
+http://api.college.restapi.org/students/3248234/transcripts/2005/fall 
 ```
 
 REST API clients should be encouraged to utilize HTTP’s provided format selection mechanism, the Accept request header.
 
-```
-Accept:  application/json
+```text
+Accept: application/json
 ```
 
 Using media type negotiation clients can select a format.
@@ -128,32 +128,32 @@ Using media type negotiation clients can select a format.
 ### URI authority desing
 
 #### Rule: Consistent subdomain names should be used for your client developer portal
- The full domain name of an API should add a subdomain named api. For example:
 
-```
-http: //api.soccer.restapi.org
-```
+The full domain name of an API should add a subdomain named api. For example:
 
-#### Rule: Consistent subdomain names should be used for your client developer portal
+```text
+http://api.soccer.restapi.org
+```
 
 If an API provides a developer portal, by convention it should have a subdomain labeled developer. For example:
 
-```
-http: //developer.soccer.restapi.org
+```text
+http://developer.soccer.restapi.org
 ```
 
 ### Resources modeling
 
 #### Collection
+
 The URI path conveys a REST API’s resource model, with each forward slash separated path segment corresponding to a unique resource within the model’s hierarchy. For example, this URI design:
 
-```
-http: //api.soccer.restapi.org/leagues/seattle/teams/trebuchet
+```text
+http://api.soccer.restapi.org/leagues/seattle/teams/trebuchet
 ```
 
 Indicates that each of these URIs should also identify an addressable resource:
 
-```
+```text
 http: //api.soccer.restapi.org/leagues/seattle/teams
 http: //api.soccer.restapi.org/leagues/seattle
 http: //api.soccer.restapi.org/leagues
@@ -172,7 +172,7 @@ REST API relies on controller resources to perform application-specific actions 
 
 Controller names typically appear as the last segment in a URI path, with no child resources to follow them in the hierarchy. The example below shows a controller resource that allows a client to resend an alert to a user:
 
-```
+```text
 POST /alerts/245743/resend
 ```
 
@@ -184,15 +184,15 @@ Assigning meaningful values to each path segment helps to clearly communicate th
 
 Example:
 
-```
-http: //api.soccer.restapi.org/leagues
+```text
+http://api.soccer.restapi.org/leagues
 ```
 
 #### Rule: A verb or verb phrase should be used for controller names
 
 Like a computer program’s function, a URI identifying a controller resource should be named to indicate its action. For example:
 
-```
+```text
 http: //api.college.restapi.org/students/morgan/register
 http: //api.example.restapi.org/lists/4324/dedupe
 http: //api.ognom.restapi.org/dbs/reindex
@@ -202,7 +202,7 @@ http: //api.ognom.restapi.org/dbs/reindex
 
 The URI Template syntax allows designers to clearly name both the static and variable segments. A URI template includes variables that must be substituted before resolution.  The URI template example below has three variables (leagueId, teamId, and playerId):
 
-```
+```text
 http: //api.soccer.restapi.org/leagues/{leagueId}/teams/{teamId}/players/{playerId}
 ```
 
@@ -212,13 +212,13 @@ HTTP request methods should be used to indicate which CRUD function is performed
 
 Example:
 
-```
+```text
 DELETE /users/1234
 ```
 
 The following are antipatterns:
 
-```
+```text
 GET /deleteUser?id=1234
 GET /deleteUser/1234
 DELETE /deleteUser/1234
@@ -229,25 +229,21 @@ POST /users/1234/delete
 
 Optional **query** comes after the path and before the optional fragment:
 
-```
-URI = scheme "://" authority "/" path [
-    "?" query
-] [
-    "#" fragment
-]
+```text
+URI = scheme "://" authority "/" path ["?" query ["#" fragment]
 ```
 
 #### Rule: The query component of a URI may be used to filter collections or stores
 
 In the next example, the response message’s state representation contains a listing of all the users in the collection:
 
-```
+```text
 GET /users
 ```
 
 In the next example, the response message’s state representation contains a filtered list of all the users in the collection with a “role” value of admin:
 
-```
+```text
 GET /users?role=admin
 ```
 
@@ -255,7 +251,7 @@ GET /users?role=admin
 
 A REST API client should use the query component to paginate collection and store results with the pageSize and pageStartIndex parameters. The pageSize parameter specifies the maximum number of contained elements to return in the response. The pageStartIndex parameter specifies the zero-based index of the first element to return in the response. For example:
 
-```
+```text
 GET /users?pageSize=25&pageStartIndex=50
 ```
 
@@ -263,7 +259,7 @@ We can consider designing a special controller when the complexity of a client's
 
 Example of a special controller:
 
-```
+```text
 POST /users/search
 ```
 
@@ -285,13 +281,13 @@ Tunneling refers to any abuse of HTTP that masks or misrepresents a message’s 
 
 A REST API client uses the GET method in a request message to retrieve the state of a resource, in some representational form. A client’s GET request message may contain headers but no body.
 
-The architecture of the Web relies heavily on the nature of the GET method. Clients count on being able to repeat GET requests without causing side effects. 
+The architecture of the Web relies heavily on the nature of the GET method. Clients count on being able to repeat GET requests without causing side effects.
 
 #### **Rule:** HEAD should be used to retrieve response headers
 
 Clients use HEAD to retrieve the headers without a body. In other words, HEAD returns the same response as GET, except that the API returns an empty body. Clients can use this method to check whether a resource exists or to read its metadata.
 
-```
+```text
 Like GET, a HEAD request message may contain headers but no body.
 ```
 
@@ -309,7 +305,7 @@ Clients must use the PUT request method to make changes to resources. The PUT re
 
 Clients use POST when attempting to create a new resource within a collection. The POST request’s body contains the suggested state representation of the new resource to be added to the server-owned collection.
 
-```
+```text
 This is the first of two uses of the POST method within the context of REST API design. Metaphorically, this use of POST is analogous to “posting” a new message on a bulletin board.
 ```
 
@@ -319,7 +315,7 @@ Clients use the POST method to invoke the function-oriented controller resources
 
 Our REST API designs use POST, along with a targeted controller resource, to trigger all operations that cannot be intuitively mapped to one of the other core HTTP methods. In other words, the POST method should not be used to get, store, or delete resources—HTTP already provides specific methods for each of those functions.
 
-```
+```text
 This is the second use of POST in the design of REST APIs. This use case resembles the fairly common concept of a runtime system’s “PostMessage” mechanism, which allows functions to be invoked across some sort of boundary.
 ```
 
@@ -327,7 +323,7 @@ This is the second use of POST in the design of REST APIs. This use case resembl
 
 A client uses DELETE to request that a resource be completely removed from its parent, which is often a collection or store. Once a DELETE request has been processed for a given resource, the resource can no longer be found by clients. Therefore, any future attempt to retrieve the resource’s state representation, using either GET or HEAD, must result in a 404 (“Not Found”) status returned by the API.
 
-```
+```text
 If an API wishes to provide a “soft” delete or some other state-changing interaction, it should employ a special controller resource and direct its clients to use POST instead of DELETE to interact.
 ```
 
@@ -335,7 +331,7 @@ If an API wishes to provide a “soft” delete or some other state-changing int
 
 Clients may use the OPTIONS request method to retrieve resource metadata that includes an Allow header value. For example:
 
-```
+```text
 Allow: GET, PUT, DELETE
 ```
 
@@ -367,7 +363,7 @@ Another best practice is to create always a **root** element. Create a root elem
 
 The example below show a well-formed json:
 
-```
+```json
 {
     "firstName" : "Osvaldo",
     "lastName" : "Alonso",    
@@ -391,7 +387,7 @@ A field is named slot with some associated information that is stored in its val
 
 We can specify the field representation using the following format:
 
-```
+```text
 {
     "type" : <Text, that defines the content of its value>,
     "defaultValue" : <a type-specific value>,
@@ -411,7 +407,7 @@ The json fields may be one of the following types:
 
 Example:
 
-```
+```json
 {
     "firstName": "John"
 }
@@ -421,7 +417,7 @@ Example:
 
 exaples:
 
-```
+```json
 {
     "age": 15,
     "weight": 15.55
@@ -432,7 +428,7 @@ exaples:
 
 Example:
 
-```
+```json
 {
     "employee": {
         "firstName": "John",
@@ -444,9 +440,9 @@ Example:
 
 **Array**: Values in JSON can be arrays.
 
-Example: 
+Example:
 
-```
+```json
 {
     "employees": ["Anna", "John"]
 }
@@ -456,7 +452,7 @@ Example:
 
 Example:
 
-```
+```json
 {
     "onSale": true
 }
@@ -466,13 +462,11 @@ Example:
 
 Example:
 
-```
+```json
 {
     "midleName": null
 }
 ```
-
-
 
 ### Error representation design
 
@@ -484,7 +478,7 @@ This rule describes the reprsentation design for a single error.
 
 The example below show the representation error desing using the Content-type: application/json:
 
-```
+```json
 {
     "code": "123",
     "description": "an error has  occurred"
@@ -500,7 +494,7 @@ If a request result in one or more errors we should use an ErrorContainer to rep
 
 In the example below there is a ErrorContainer using the Media-Type: application/json.
 
-```
+```json
 {
     "elements": [
         {
