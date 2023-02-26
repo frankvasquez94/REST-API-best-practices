@@ -11,6 +11,8 @@
   - [URI path design](#uri-path-design)
   - [URI query desing](#uri-query-desing)
 - [Interaction designs with HTTP](#interaction-designs-with-http)
+  - [Request Methods](#request-methods)
+  - [Response Status Code](#response-status-code)
 - [Metadata design](#metadata-design)
 - [Representation design](#representation-design)
   - [Message body format design](#message-body-format-desing)
@@ -337,9 +339,9 @@ Allow: GET, PUT, DELETE
 
 In response to an OPTIONS request, a REST API may include a body that includes further details about each interaction option.
 
-## Response Status Code
+### Response Status Code
 
-### HTTP response **success** code
+#### HTTP response **success** code
 
 |Code|Name|Meaning|
 |:----|:----|:----|
@@ -352,7 +354,7 @@ In response to an OPTIONS request, a REST API may include a body that includes f
 |304|Not Modified|Sent to preserve bandwidth (with conditional GET)|
 |307|Temporary Redirect|Indicates that a temporary URI has been assigned to the client’s requested resource|
 
-### HTTP response **error** code
+#### HTTP response **error** code
 
 |Code|Name|Meaning|
 |:----|:----|:----|
