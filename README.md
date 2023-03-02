@@ -503,7 +503,9 @@ Example:
 
 ### Error representation design
 
-Http's 400 and 500 error status codes should be used with clien readable information in the response message’s entity body.
+The first step when we are working with errors is to provide a client with a proper http status code. Additionally we may need to provide more details in the resposne body.
+
+Http's 400 and 500 error status codes should be used with client readable information in the response message’s entity body.
 
 #### Rule: A consistent form should be used to represent errors
 
@@ -529,7 +531,7 @@ In the example below there is a ErrorContainer using the Media-Type: application
 
 ```json
 {
-    "elements": [
+    "errors": [
         {
             "code": "123",
             "description": "this field is required"
