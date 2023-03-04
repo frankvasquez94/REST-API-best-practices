@@ -372,6 +372,8 @@ In response to an OPTIONS request, a REST API may include a body that includes f
 
 ## Metadata design
 
+IN PROGRESS
+
 ## Representation design
 
 ### Message body format desing
