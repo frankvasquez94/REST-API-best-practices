@@ -372,7 +372,27 @@ In response to an OPTIONS request, a REST API may include a body that includes f
 
 ## Metadata design
 
-IN PROGRESS
+### HTTP Headers
+
+Various forms of metadata may be conveyed through the entity headers contained within HTTP’s request and response messages. HTTP defines a set of standard headers, some of which provide information about a requested resource. Other headers indicate something about the representation carried by the message. Finally, a few headers serve as directives to control intermediary caches.
+
+#### **Rule:** Content-Type must be used
+
+The Content-Type header names the type of data found within a request or response message’s body. The value of this header is a specially formatted text string known as a media type, which is the subject of Media Types. Clients and servers rely on this header’s value to tell them how to process the sequence of bytes in a message’s body.
+
+#### **Rule:** Content-Length should be used
+
+The Content-Length header gives the size of the entity-body in bytes. In responses, this header is important for two reasons. First, a client can know whether it has read the correct number of bytes from the connection. Second, a client can make a HEAD request to find out how large the entity-body is, without downloading it.
+
+#### **Rule:** Last-Modified should be used in responses
+
+The Last-Modified header applies to response messages only. The value of this response header is a timestamp that indicates the last time that something happened to alter the representational state of the resource.
+
+#### **Rule:** ETag should be used in responses
+
+The value of ETag is an opaque string that identifies a specific “version” of the representational state contained in the response’s entity. The entity is the HTTP message’s payload, which is composed of a message’s headers and body. The entity tag may be any string value, so long as it changes along with the resource’s representation. 
+
+Clients may choose to save an ETag header’s value for use in future GET requests, as the value of the conditional If-None-Match request header. If the REST API concludes that the entity tag hasn’t changed, then it can save time and bandwidth by not sending the representation again.
 
 ## Representation design
 
