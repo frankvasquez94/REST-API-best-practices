@@ -14,6 +14,9 @@
   - [Request Methods](#request-methods)
   - [Response Status Code](#response-status-code)
 - [Metadata design](#metadata-design)
+  - [HTTP Headers](#http-headers)
+  - [Media Types](#media-types)
+  - [Registered Media Types](#registered-media-types)
 - [Representation design](#representation-design)
   - [Message body format design](#message-body-format-desing)
   - [Media type representation](#media-type-representation)
@@ -393,6 +396,83 @@ The Last-Modified header applies to response messages only. The value of this re
 The value of ETag is an opaque string that identifies a specific “version” of the representational state contained in the response’s entity. The entity is the HTTP message’s payload, which is composed of a message’s headers and body. The entity tag may be any string value, so long as it changes along with the resource’s representation. 
 
 Clients may choose to save an ETag header’s value for use in future GET requests, as the value of the conditional If-None-Match request header. If the REST API concludes that the entity tag hasn’t changed, then it can save time and bandwidth by not sending the representation again.
+
+#### **Rule:** Stores must support conditional PUT requests
+
+A store resource uses the PUT method for both insert and update, which means it is difficult for a REST API to know the true intent of a client’s PUT request. Through headers, HTTP provides the necessary support to help an API resolve any potential ambiguity. A REST API must rely on the client to include the `If-Unmodified-Since` and/or `If-Match` request headers to express their intent. The `If-Unmodified-Since` request header asks the API to proceed with the operation if, and only if, the resource’s state representation hasn’t changed since the time indicated by the header’s supplied timestamp value. The `If-Match` header’s value is an entity tag, which the client remembers from an earlier response’s ETag header value. The If-Match header makes the request conditional, based upon an exact match of the header’s supplied entity tag value and the representational state’s current entity tag value, as stored or computed by the REST API.
+
+#### **Rule:** Location must be used to specify the URI of a newly created resource
+
+The Location response header’s value is a URI that identifies a resource that may be of interest to the client. In response to the successful creation of a resource within a collection or store, a REST API must include the Location header to designate the URI of the newly created resource.
+
+#### **Rule:** Cache-Control, Expires, and Date response headers should be used to encourage caching
+
+Caching is one of the most useful features built on top of HTTP. You can take advantage of caching to reduce client-perceived latency, to increase reliability, and to reduce the load on an API’s servers.
+
+When serving a representation, include a Cache-Control header with a max-age value (in seconds) equal to the freshness lifetime. For example:
+
+```
+Cache-Control: max-age=60, must-revalidate
+```
+
+To support legacy HTTP 1.0 caches, a REST API should include an Expires header with the expiration date-time. The value is a time at which the API generated the representation plus the freshness lifetime. REST APIs should also include a Date header with a date-time of the time at which the API returned the response.y
+
+```
+Date: Tue, 15 Nov 1994 08:12:31 GMT
+Expires: Thu, 01 Dec 1994 16:00:00 GMT
+```
+
+#### **Rule:** Cache-Control, Expires, and Pragma response headers may be used to discourage caching
+
+If a REST API’s response must not cached, add Cache-Control headers with the value no-cache and no-store. In this case, also add the Pragma: no-cache and Expires: 0 header values to interoperate with legacy HTTP 1.0 caches.
+
+### Media Types
+
+To identify the form of the data contained within a request or response message body, the Content-Type header’s value references a media type.
+
+### Media Type Syntax
+Media types have the following syntax:
+
+```
+type "/" subtype *( ";" parameter )
+```
+
+The *type* value may be one of: application, audio, image, message, model, multipart, text, or video. A typical REST API will most often work with media types that fall under the application type. In a hierarchical fashion, the media type’s subtype value is subordinate to its type.
+
+Note that parameters may follow the type/subtype in the form of attribute=value pairs that are separated by a leading semi-colon (;) character. A media type’s specification may designate parameters as either required or optional.
+
+The two examples below demonstrate a Content-Type header value that references a media type with a single charset parameter:
+
+```
+Content-type: text/html; charset=ISO-8859-4
+Content-type: text/plain; charset="us-ascii"
+```
+
+### Registered Media Types
+
+The Internet Assigned Numbers Authority (IANA) governs the set of registered media types and provides links to each type’s published specification (RFC).
+
+Some commonly used registered media types are listed below:
+
+* ***text/plain:*** A plain text format with no specific content structure or markup.
+
+* ***text/html:***
+Content that is formatted using the HyperText Markup Language (HTML).
+
+* ***image/jpeg:***
+An image compression method that was standardized by the Joint Photographic Experts Group (JPEG).
+
+* ***application/xml:***
+Content that is structured using the Extensible Markup Language (XML).
+
+* ***application/atom+xml:***
+Content that uses the Atom Syndication Format (Atom), which is an XML-based format that structures data into lists known as feeds.
+
+* ***application/javascript:***
+Source code written in the JavaScript programming language.
+
+* ***application/json:***
+The JavaScript Object Notation (JSON) text-based format that is often used by programs to exchange structured data.
 
 ## Representation design
 
