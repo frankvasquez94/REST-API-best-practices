@@ -18,6 +18,10 @@
   - [Message body format design](#message-body-format-desing)
   - [Media type representation](#media-type-representation)
   - [Error representation design](#error-representation-design)
+- [API versioning](#api-versioning)
+  - [When to create a version of the API](#when-to-create-a-version-of-the-api)
+  - [Why should you do versioning?](#why-should-you-do-versioning)
+  - [API versioning types](#api-versioning-types)
 - [Client concerns](#client-concerns)
 - [Design principles](#design-principles)
 
@@ -569,6 +573,80 @@ In the example below there is a ErrorContainer using the Media-Type: application
 #### Rule: Consistent error types should be used for common error conditions
 
 Generic error types may be leveraged by many APIs. These error types should be defined once and then shared across all APIs.
+
+## API versioning
+
+ It's critical that clients can count on services to be stable over time, and it's critical that services can add features and make changes.
+
+ API versioning is a procedure that implicates making operational and structural changes to the APIs so that they can become adaptable and suitable to the growing and altering requirements of the customers. In other words API versioning is the practice of transparently managing changes to the APIs.
+
+### When to create a version of the API
+
+1. API payload structures are changed at any level
+2. Any API endpoint is eliminated to fix the design flaws or get rid of a faulty HTTP implementation.
+
+Additionally to the above reasons, versioning is a **must** when developers will add new API endpoints or parameters to the API responses. However, both these situations won’t ask for a completely new version release. Only minor updates are enough.
+
+### Why should you do versioning?
+
+Using the version API is cricial in two aspects:
+
+1. ‍**Disruptive change**
+
+Adjusting any code or primal API structure will direct to breaking changes on the consumer side as well. If one doesn’t adopt the approach, the end-user might compel the consumer to make changes in their applications as well.
+
+Here are some scenarios that falls under disruptive changes:
+
+- Altering the original request/response format type (e.g from json to xml).
+- Revising the data type of a property (e.g from integer to string) or the property name completely (e.g. from name to productName).
+- Addition of a new essential field, e.g. a **required** header or property in the body.
+- Eliminating any pre-defined response property like description details (e.g removing description from product).
+
+All this changes have a direct impact on the applications designed using the original APIs.
+
+2. **Change management in the API**
+
+Any big or notable change should be handled through versioning only. Change management, ensure that it happens.
+
+The process is feasible to avert any breaking API changes that you can expect. It revolves around the below principles:
+
+- Providing ongoing support for the present API properties/end-points
+- Providing fresh end-points or properties instead of modifying the previous one
+- Carefully terminating the outdated end-points/properties
+
+Adhering to these principles help reduce the efforts invested in versioning and make it simpler to deploy.
+
+### API versioning types
+
+1. **Query parameter versioning**
+
+As the technique name denotes we use a query parameter to indicate the API version. It is effective and easy to implement. We can define a default version.
+
+Example:
+
+```text
+https://api.contoso.com/products/users?version=1.0
+```
+
+2. **URI Versioning**
+
+It involves mentioning the API’s version in URI. It’s loved because of its unmatched effectiveness and easy implementation. One has to introduce the ‘v’ prefix in the URI path.
+
+The only thing that you need to bring into action is setting API endpoints every API developer does eventually. It’s perfect on most of the fronts but disappoints by causing a major API design flaw. It forces every URI to feature a distinct resource that causes a huge URI footprint.
+
+Example:
+
+```text
+https://api.contoso.com/v1.0/products/users
+```
+
+3. ‍**Custom Headers Versioning**
+
+It permits you to declare the API version in a header, letting you complete the process fast.
+
+```text
+--header 'version=1.0'
+```
 
 ## Client concerns
 
