@@ -25,7 +25,12 @@
   - [When to create a version of the API](#when-to-create-a-version-of-the-api)
   - [Why should you do versioning?](#why-should-you-do-versioning)
   - [API versioning types](#api-versioning-types)
-- [Client concerns](#client-concerns)
+- [Security](#security)
+  - [Ways to secure a REST API](#ways-to-secure-a-rest-api)
+    - [1. Basic authentication](#1-basic-authentication)
+    - [2. API Keys](#2-api-keys)
+    - [3. OAuth 2](#3-oauth-2)
+    - [4. Json Web Token (JWT)](#4-json-web-token-jwt)
 - [Design principles](#design-principles)
 
 ## Introduction
@@ -728,6 +733,90 @@ It permits you to declare the API version in a header, letting you complete the 
 --header 'version=1.0'
 ```
 
-## Client concerns
+## Security
+
+Secure a REST API is one of the biggest challenges to solve. There are different reasons why REST API security is quite important:
+
+1. To protect data.
+2. To protect against attacks.
+3. Anti-Farming.
+
+### Ways to secure a REST API
+
+RESTful APIs are stateless, so the auth security must not depend on the session or cookie alone, these auth parameters should be validated on each and every request to the server most likely using the headers. Bellow is a list of the most useful ways to secure REST APIs:
+
+#### 1. Basic authentication
+
+One of the simplest way to implement security in REST APIs. It does not require any cookies or sessions, it just passes auth credentials through the HTTP headers.
+
+So it involves the client sending user and password seperated by a single colon encoded with Base64 all together in a string.
+
+Example:
+
+```text
+apiUser:pass123
+```
+
+Authorization: Basic YXBpVXNlcjpwYXNzMTIz
+
+This method is not very secure, the most serious flaw with basic auth is that you pass user and password over the network in the header in the form of encoded string.
+
+But Still if you are using this technique then it should be used with TLS or SSL (https) protocol in order to protect sensitive information.
+
+#### 2. API Keys
+
+API keys are for projects or applications, authentication is for users. For Example, AWS exposing API Keys to access it and identify the application.
+
+While API keys identify the calling project, they don’t identify the calling user. If we have created an application that is calling an API, an API key can identify the application that is making the call, but not the identity of the person who is using the application.
+
+**when to use API Keys:**
+
+- You do want to block anonymous traffic. API keys identify an application’s traffic for the API producer.
+- You want to control the number of calls made to your API.
+- You want to identify usage patterns in your API’s traffic.
+
+**When not to use API Keys:**
+
+- Identifying individual users, API keys don’t identify users, they identify projects.
+
+#### 3. OAuth 2
+
+The OAuth 2.0 is an authorization framework that enables a third-party application to obtain limited access to an HTTP service, either on behalf of a resource owner or by allowing the third-party application to obtain access on its own behalf.
+
+OAuth works over HTTPS and authorizes devices, APIs, applications and servers with access tokens rather than credentials.
+
+OAuth 2.0 can be used to read data of a user from another application without compromising the user’s sensitive data, like user credentials. It also supplies the authorization workflow for web, desktop applications, and mobile devices.
+
+**OAuth Tokens:**
+
+The OAuth uses tokens, to authorize user. Access Tokens and the refresh tokens.
+
+**Access Tokens:**
+
+Are the tokens used by the client to access the resource API, they have an expiry. This is not something used by sercret clients but are available with public clients.
+
+**Refresh Tokens:**
+
+These tokens can live much longer like in days,months,years. This token is used to get new access tokens. To get a Refresh tokens applications typically need secret clients with authentication.
+
+Example:
+
+```text
+Authorization: Bearer 0123456789abcxyz
+```
+
+#### 4. Json Web Token (JWT)
+
+It is one of the Token authentication standard. It allows you to digitally sign information(called as claims) with a signature which can be verified later with a secret signing key.
+
+JWT can store any type of data, which like OAuth access tokens should be passed in the authorization header.
+
+Authorization: Bearer JWT
+
+Example:
+
+```text
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+```
 
 ## Design principles
