@@ -21,6 +21,13 @@
   - [Message body format design](#message-body-format-desing)
   - [Media type representation](#media-type-representation)
   - [Error representation design](#error-representation-design)
+- [Cross-Origin Resource Sharing (CORS)](#cross-origin-resource-sharing-cors)
+  - [The same origin policy (SOP)](#the-same-origin-policy-sop)
+  - [CORS](#cors)
+  - [Preflight request](#preflight-request)
+  - [CORS headers](#cors-headers)
+  - [CORS errors](#cors-errors)
+  - [CORS Best Practices](#cors-best-practices)
 - [API versioning](#api-versioning)
   - [When to create a version of the API](#when-to-create-a-version-of-the-api)
   - [Why should you do versioning?](#why-should-you-do-versioning)
@@ -31,7 +38,6 @@
     - [2. API Keys](#2-api-keys)
     - [3. OAuth 2](#3-oauth-2)
     - [4. Json Web Token (JWT)](#4-json-web-token-jwt)
-- [Design principles](#design-principles)
 
 ## Introduction
 
@@ -659,6 +665,118 @@ In the example below there is a ErrorContainer using the Media-Type: application
 
 Generic error types may be leveraged by many APIs. These error types should be defined once and then shared across all APIs.
 
+## Cross-Origin Resource Sharing (CORS)
+
+### The same origin policy (SOP)
+
+The same origin policy is something like a rule that browsers use to keep us safe on the internet.
+
+If a web page from one website tries to do something on a different website, like read information or send data, the web browser won’t let it happen. It’s like a security guard that help us to protect our data and keep us safe on the internet. Imagine if anyone could read sensitive information like your emails or see your bank account information just by going to a website! The Same-Origin Policy helps prevent that from happening.
+
+### CORS
+
+CORS is an HTTP-header based mechanism that allows a server to indicate any origins (domain, scheme, or port) other than its own from which a browser should permit loading resources. CORS enables controlled access to resources located outside of a given domain and extends and adds flexibility to the same-origin policy (SOP). In other words CORS is a way for web pages to ask permission from a different website to use its information.
+
+For example if you want to view some pictures on a website called **A**. But the pictures are stored on a different website called **B**. Normally, your web browser won’t show you the pictures because of the Same-Origin Policy.
+
+But with CORS, website **A** can send a special message called a **CORS request** to website **B**. This message asks website **B** if it’s okay for website **A** to see the pictures. If website **B** says it’s okay, then your web browser will show you the pictures from website **B** on website **A**.
+
+CORS helps web pages work together and share information safely.
+
+### Preflight request
+
+A CORS preflight request is a CORS request that checks to see if the CORS protocol is understood and a server is aware using specific methods and headers. In other words is an asking way for permission before doing something.
+
+It is an OPTIONS request, using three HTTP request headers:
+
+- Access-Control-Request-Method
+- Access-Control-Request-Headers
+- Origin
+
+A preflight request is **automatically** issued by a browser and in normal cases, front-end developers don't need to craft such requests themselves. It appears when request is qualified as "to be preflighted" and omitted for simple requests.
+
+Preflight requests help keep information safe on the internet by making sure that websites only send and receive information when it’s safe to do so.
+
+Example before sending a DELETE request:
+
+```text
+OPTIONS /resource/foo
+Access-Control-Request-Method: DELETE
+Access-Control-Request-Headers: origin, x-requested-with
+Origin: https://foo.bar.org
+```
+
+If the server allows it, then it will respond to the preflight request with an Access-Control-Allow-Methods response header, which lists DELETE:
+
+```text
+HTTP/1.1 204 No Content
+Connection: keep-alive
+Access-Control-Allow-Origin: https://foo.bar.org
+Access-Control-Allow-Methods: POST, GET, OPTIONS, DELETE
+Access-Control-Max-Age: 86400
+```
+
+### CORS headers
+
+Bellow are some of the most common headers:
+
+1. Access-Control-Allow-Origin: This CORS header tells your web browser which websites are allowed to see the information. It’s like telling your friends which toys they can play with.
+
+example:
+
+```text
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Origin: https://example.com
+```
+
+2. Access-Control-Allow-Methods: This CORS header tells your web browser which kinds of actions it can take with the information, like reading or editing. It’s like telling your friends which games they can play with the toys.
+
+example:
+
+```
+Access-Control-Allow-Methods: POST, GET, OPTIONS
+```
+
+3. Access-Control-Allow-Headers: This CORS header tells your web browser which kinds of information it can share, like text or pictures. It’s like telling your friends what kind of snacks they can have.
+
+### CORS errors
+
+There are a few different types of CORS errors, but they all mean the same thing: you can’t access the information or resources you want. Here are the most common CORS errors that you will encounter.
+
+- Access-Control-Allow-Origin:
+
+This error means that the website you’re trying to access doesn’t allow other websites to use its resources.
+
+- Access-Control-Allow-Headers:
+
+This error means that the website you’re trying to access doesn’t allow you to use certain headers in your request.
+
+- Access-Control-Allow-Methods:
+
+This error means that the website you’re trying to access doesn’t allow you to use certain methods, like GET or POST, to access its resources.
+
+### CORS Best Practices
+
+#### Include the necessary CORS headers in your server’s response
+
+When a browser makes a cross-origin request, the server being accessed must include specific response headers to permit the request. Make sure your server includes the appropriate CORS headers such as Access-Control-Allow-Origin, Access-Control-Allow-Methods, and Access-Control-Allow-Headers.
+
+#### Only allow access to necessary resources
+
+To minimize the risk of unauthorized access, only allow cross-origin access to necessary resources. Avoid allowing access to sensitive information or resources unless it’s required.
+
+#### Use SSL/TLS encryption
+
+Use SSL/TLS encryption to ensure that any data being transmitted is secure. This can help prevent unauthorized interception of data.
+
+#### Set appropriate CORS configuration
+
+Set up CORS configuration based on your website’s requirements. For example, if your website has a public API that should be accessible to third-party websites, set up CORS to allow cross-origin requests from those specific domains.
+
+#### Monitor CORS requests
+
+Monitor cross-origin requests to your website to identify any unusual or potentially malicious activity. Implement logging and monitoring tools to detect any unauthorized access attempts.
+
 ## API versioning
 
  It's critical that clients can count on services to be stable over time, and it's critical that services can add features and make changes.
@@ -818,5 +936,3 @@ Example:
 ```text
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
 ```
-
-## Design principles
